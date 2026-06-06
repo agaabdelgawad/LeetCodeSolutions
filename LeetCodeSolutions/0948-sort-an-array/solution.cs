@@ -1,45 +1,41 @@
 public class Solution{
     public int[] SortArray(int[] nums){
-        QuickSort(nums, 0, nums.Length -1);
+        HeapSort(nums);
         return nums;
     }
 
-    private void QuickSort(int[] nums, int left, int right){
-        if(left >= right) return;
+    private void HeapSort(int[] nums){
+        int n = nums.Length;
+        int i;
 
-        if(right == left + 1){
-            if(nums[left] > nums[right]) Swap(nums, left, right);
-            return;
+        for(i = n / 2 - 1; i >= 0; i--){
+            Heapify(nums, n, i);
         }
 
-        int pivot = Partition(nums, left, right);
+        for(i = n - 1; i >= 0; i--){
+            Swap(nums, 0, i);
 
-        QuickSort(nums, left, pivot - 1);
-        QuickSort(nums, pivot + 1, right);
+            Heapify(nums, i, 0);
+        }
     }
 
-    private int Partition(int[] nums, int left, int right){
-        int med = left + ((right - left) / 2);
-
-        if(nums[left] > nums[right]) Swap(nums, left, right);
-        if(nums[left] > nums[med]) Swap(nums, left, med);
-        if(nums[med] > nums[right]) Swap(nums, med, right);
-
-        Swap(nums, med, right - 1);
-
-        int i = left; int j = right - 1;
+    private void Heapify(int[] nums, int n, int i){
+        int largestNode = i;
+        int currentLargest = largestNode;
+        int leftChild; int rightChild;
 
         while(true){
-            while(nums[++i] < nums[right - 1]);
-            while(nums[--j] > nums[right - 1]);
+            leftChild = (largestNode * 2) + 1;
+            rightChild = (largestNode * 2) + 2;
 
-            if(i >= j) break;
+            if(leftChild < n && nums[leftChild] > nums[currentLargest]) currentLargest = leftChild;
+            if(rightChild < n && nums[rightChild] > nums[currentLargest]) currentLargest = rightChild;
 
-            Swap(nums, i, j);
+            if(currentLargest == largestNode) break;
+
+            Swap(nums, currentLargest, largestNode);
+            largestNode = currentLargest;
         }
-
-        Swap(nums, i, right - 1);
-        return i;
     }
 
     private void Swap(int[] nums, int i, int j){
