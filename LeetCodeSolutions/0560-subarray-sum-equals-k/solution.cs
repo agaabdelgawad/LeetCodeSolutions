@@ -1,24 +1,20 @@
 public class Solution {
     public int SubarraySum(int[] nums, int k) {
         int result = 0;
-        int currentSum = 0;
-        int reqDiff = 0;
-        Dictionary<int, int> requiredDiffCount = new Dictionary<int, int>();
-        requiredDiffCount[0] = 1;
+        int currentPrefixSum = 0;
+        int targetPrefixSum;
+        Dictionary<int, int> prefixSumCountsDict = new Dictionary<int, int>();
+        prefixSumCountsDict[0] = 1;
 
         for(int i = 0; i < nums.Length; i++){
-            currentSum += nums[i];
-            reqDiff = currentSum - k;
+            currentPrefixSum+= nums[i];
+            targetPrefixSum = currentPrefixSum - k;
 
-            if(requiredDiffCount.ContainsKey(reqDiff)){
-                result += requiredDiffCount[reqDiff];
+            if(prefixSumCountsDict.ContainsKey(targetPrefixSum)){
+                result+= prefixSumCountsDict[targetPrefixSum];
             }
 
-            if(!requiredDiffCount.ContainsKey(currentSum)){
-                requiredDiffCount[currentSum] = 0;
-            }
-
-            requiredDiffCount[currentSum]++;
+            prefixSumCountsDict[currentPrefixSum] = prefixSumCountsDict.GetValueOrDefault(currentPrefixSum) + 1;
         }
 
         return result;
