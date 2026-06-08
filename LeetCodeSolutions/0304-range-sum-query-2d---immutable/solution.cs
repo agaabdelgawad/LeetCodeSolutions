@@ -1,32 +1,40 @@
 public class NumMatrix {
-    int[][] _preSumMatrix;
+    private readonly int[][] _prefixSumMat;
 
     public NumMatrix(int[][] matrix) {
-        _preSumMatrix = new int[matrix.Length][];
-
-        for(int i = 0; i < matrix.Length; i++){
-            _preSumMatrix[i] = new int[matrix[i].Length];
+        if (matrix == null || matrix.Length == 0 || matrix[0].Length == 0) {
+            _prefixSumMat = new int[1][] { new int[1] };
+            return;
         }
 
-        int above; int left; int topLeft;
+        int rows = matrix.Length + 1;
+        int cols = matrix[0].Length + 1;
+        _prefixSumMat = new int[rows][];
+        _prefixSumMat[0] = new int[cols];
 
-        for(int i = 0; i < _preSumMatrix.Length; i++){
-            for(int j = 0; j < _preSumMatrix[i].Length; j++){
-                above = i > 0 ? _preSumMatrix[i - 1][j] : 0;
-                left = j > 0 ? _preSumMatrix[i][j - 1] : 0;
-                topLeft = (i > 0 && j > 0) ? _preSumMatrix[i - 1][j - 1] : 0;
+        for(int i = 1; i < rows; i++){
+            _prefixSumMat[i] = new int[cols];
 
-                _preSumMatrix[i][j] = matrix[i][j] + above + left - topLeft;
+            int[] currentRow = _prefixSumMat[i];
+            int[] previousRow = _prefixSumMat[i - 1];
+            int[] matrixRow = matrix[i - 1];
+
+            for(int j = 1; j < cols; j++){
+                currentRow[j] = matrixRow[j - 1]
+                                    + previousRow[j]
+                                    + currentRow[j - 1]
+                                    - previousRow[j - 1];
             }
         }
     }
     
     public int SumRegion(int row1, int col1, int row2, int col2) {
-        int above = row1 > 0 ? _preSumMatrix[row1 - 1][col2] : 0;
-        int left = col1 > 0 ? _preSumMatrix[row2][col1 - 1] : 0;
-        int topLeft = (row1 > 0 && col1 > 0) ? _preSumMatrix[row1 - 1][col1 - 1] : 0;
+        if (_prefixSumMat.Length <= 1) return 0;
 
-        return _preSumMatrix[row2][col2] - above - left + topLeft;
+        return _prefixSumMat[row2 + 1][col2 + 1]
+             - _prefixSumMat[row1][col2 + 1]
+             - _prefixSumMat[row2 + 1][col1]
+             + _prefixSumMat[row1][col1];
     }
 }
 
