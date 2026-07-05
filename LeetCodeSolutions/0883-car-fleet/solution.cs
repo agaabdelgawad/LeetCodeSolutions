@@ -1,17 +1,22 @@
 public class Solution {
     public int CarFleet(int target, int[] position, int[] speed) {
-       Array.Sort(position, speed) ;
-       Array.Reverse(position);
-       Array.Reverse(speed);
+        var n = position.Length;
+        if(n <= 1) return n;
 
-       Stack<double> fleetsStack = new Stack<double>();
-       for(int i = 0; i < position.Length; i++){
-            double timeToTarget = ((double)target - position[i]) / speed[i];
-            if(fleetsStack.Count == 0 || timeToTarget > fleetsStack.Peek()){
-                fleetsStack.Push(timeToTarget);
+        var car = new (int Position, int Speed)[n];
+        for(int i = 0; i < n; i++) car[i] = new (position[i], speed[i]);
+        Array.Sort(car, (a,b) => b.Position.CompareTo(a.Position));
+
+        int fleets = 0;
+        double previousTime = 0.0;
+        for(int i = 0; i < n; i++){
+            double timeToTarget = ((double)target - car[i].Position) / car[i].Speed;
+            if(timeToTarget > previousTime){
+                fleets++;
+                previousTime = timeToTarget;
             }
-       }
+        }
 
-       return fleetsStack.Count;
+        return fleets;
     }
 }
