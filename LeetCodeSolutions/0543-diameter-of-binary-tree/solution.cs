@@ -14,15 +14,16 @@
 public class Solution {
     public int DiameterOfBinaryTree(TreeNode root) {
         int diameter = 0;
-        CalculateDepthAndDiameter(root, ref diameter);
+        CalculateDepthAndUpdateDiameter(root);
         return diameter;
-    }
 
-    private int CalculateDepthAndDiameter(TreeNode root, ref int diameter){
-        if(root == null) return 0;
-        int leftDepth = CalculateDepthAndDiameter(root.left, ref diameter);
-        int rightDepth = CalculateDepthAndDiameter(root.right, ref diameter);
-        diameter = Math.Max(diameter, leftDepth + rightDepth);
-        return 1 + Math.Max(leftDepth, rightDepth);
+        int CalculateDepthAndUpdateDiameter(TreeNode root){
+            if(root == null) return 0;
+
+            int leftDepth = CalculateDepthAndUpdateDiameter(root.left);
+            int rightDepth = CalculateDepthAndUpdateDiameter(root.right);
+            diameter = Math.Max(diameter, leftDepth + rightDepth);
+            return 1 + Math.Max(leftDepth, rightDepth);
+        }
     }
 }
