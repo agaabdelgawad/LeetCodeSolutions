@@ -24,7 +24,7 @@ public class Solution {
         if(root == null) return (0, 0);
 
         (int robLeft, int skipLeft) = CalculateRob(root.left);
-        (int robRight,int  skipRight) = CalculateRob(root.right);
+        (int robRight, int skipRight) = CalculateRob(root.right);
 
         return (root.val + skipLeft + skipRight,
                 Math.Max(robLeft, skipLeft) + Math.Max(robRight, skipRight));
