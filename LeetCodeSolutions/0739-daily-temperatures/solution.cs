@@ -5,8 +5,8 @@ public class Solution {
 
         for(int i = 0; i < temperatures.Length; i++){
             while(indicesStack.Count > 0 && temperatures[i] > temperatures[indicesStack.Peek()]){
-                int previousDay = indicesStack.Pop();
-                result[previousDay] = i - previousDay;
+                int previousDayIndex = indicesStack.Pop();
+                result[previousDayIndex] = i - previousDayIndex;
             }
             indicesStack.Push(i);
         }
