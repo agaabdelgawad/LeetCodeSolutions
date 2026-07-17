@@ -16,20 +16,19 @@ public class Solution {
         if(preorder.Length == 0 && inorder.Length == 0) return null;
 
         int preIndex = 0;
-        int inIndex = 0;
-        
-        return ConstructTree(preorder, inorder, int.MaxValue);
+        Dictionary<int, int> indices = new Dictionary<int, int>();
+        for(int i = 0; i < inorder.Length; i++) indices[inorder[i]] = i;
 
-        TreeNode ConstructTree(int[] preorder, int[] inorder, int limit) {
-            if(preIndex >= preorder.Length) return null;
-            if(inorder[inIndex] == limit){
-                inIndex++;
-                return null;
-            }
+        return ConstructTree(preorder, 0, inorder.Length - 1);
+
+        TreeNode ConstructTree(int[] preorder, int l, int r) {
+            if(l > r) return null;
 
             TreeNode root = new TreeNode(preorder[preIndex++]);
-            root.left = ConstructTree(preorder, inorder, root.val);
-            root.right = ConstructTree(preorder, inorder, limit);
+            int middle = indices[root.val];
+
+            root.left = ConstructTree(preorder, l, middle - 1);
+            root.right = ConstructTree(preorder, middle + 1, r);
 
             return root;
         }
