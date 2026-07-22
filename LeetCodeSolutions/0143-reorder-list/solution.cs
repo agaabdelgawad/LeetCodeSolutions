@@ -11,40 +11,37 @@
  */
 public class Solution {
     public void ReorderList(ListNode head) {
-        // Find the mid node
+        // Phase 1: Fast/Slow pointer to find the middle
         ListNode slow = head;
         ListNode fast = head;
-
-        while(fast != null && fast.next != null){
+        while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
 
-        ListNode mid = slow;
-
-        // Reverse the second part
-        ListNode previous = null;
-        ListNode current = mid.next;
-        mid.next = null;
-
-        while(current != null){
-            ListNode temp = current.next;
-            current.next = previous;
-            previous = current;
-            current = temp;
+        // Phase 2: Reverse the second half & Cut the connection (slow.next "mid.next" = null)
+        ListNode prev = null;
+        ListNode curr = slow.next;
+        slow.next = null; // Important: Break the list into two!
+        while (curr != null) {
+            ListNode temp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = temp;
         }
 
-        // Merge the two parts
-        ListNode cur1 = head;
-        ListNode cur2 = previous;
-
-        while(cur2 != null){
-            ListNode temp1 = cur1.next;
-            ListNode temp2 = cur2.next;
-            cur1.next = cur2;
-            cur2.next = temp1;
-            cur1 = temp1;
-            cur2 = temp2;
+        // Phase 3: Zipper Merge (Alternate nodes)
+        ListNode curr1 = head;
+        ListNode curr2 = prev;
+        while (curr2 != null) {
+            ListNode temp1 = curr1.next;
+            ListNode temp2 = curr2.next;
+        
+            curr1.next = curr2;
+            curr2.next = temp1;
+        
+            curr1 = temp1;
+            curr2 = temp2;
         }
     }
 }
