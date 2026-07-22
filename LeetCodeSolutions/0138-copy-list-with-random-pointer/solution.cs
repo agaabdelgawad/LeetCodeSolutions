@@ -15,22 +15,43 @@ public class Node {
 
 public class Solution {
     public Node CopyRandomList(Node head) {
-        if(head == null) return null;
+        if (head == null) return null;
 
-        Dictionary<Node, Node> nodesDict = new Dictionary<Node, Node>();
-        Node current = head;
-        while(current != null){
-            nodesDict[current] = new Node(current.val);
-            current = current.next;
+        // Phase 1: Clone nodes and weave them into the original list
+        // A -> B -> C  becomes  A -> A' -> B -> B' -> C -> C'
+        Node curr = head;
+        while (curr != null) {
+            Node clone = new Node(curr.val);
+            clone.next = curr.next;
+            curr.next = clone;
+            curr = clone.next; // Move to the next original node
         }
 
-        current = head;
-        while(current != null){
-            nodesDict[current].next = current.next != null ? nodesDict[current.next] : null;
-            nodesDict[current].random = current.random != null ? nodesDict[current.random] : null;
-            current = current.next;
+        // Phase 2: Assign random pointers for the cloned nodes
+        curr = head;
+        while (curr != null) {
+            if (curr.random != null) {
+                // The clone's random is the clone of the original's random
+                curr.next.random = curr.random.next; 
+            }
+            curr = curr.next.next; // Move to the next original node
         }
 
-        return nodesDict[head];
+        // Phase 3: Unweave to restore original list and extract the cloned list
+        curr = head;
+        Node clonedHead = head.next; // A' is the head of the new list
+        Node clonedCurr = clonedHead;
+
+        while (curr != null) {
+            curr.next = curr.next.next; // Restore original's next pointer
+            if (clonedCurr.next != null) {
+                clonedCurr.next = clonedCurr.next.next; // Set clone's next pointer
+            }
+        
+            curr = curr.next;
+            clonedCurr = clonedCurr.next;
+        }
+
+        return clonedHead;
     }
 }
