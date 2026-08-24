@@ -1,11 +1,18 @@
 public class Solution {
     public bool CanJump(int[] nums) {
-        int n = nums.Length;
-        int goal = n - 1;
+        int target = nums.Length - 1;
+        int maxReach = 0;
 
-        for(int i = n - 2; i >= 0; i--) if(i + nums[i] >= goal) goal = i;
-
-        return goal == 0;
+        // Loop stops automatically if current index exceeds maximum reach
+        for (int i = 0; i <= maxReach; i++) {
+            // Update maximum reach
+            if (i + nums[i] > maxReach) maxReach = i + nums[i];
+        
+            // Early exit if reach target
+            if (maxReach >= target) return true;
+        }
+    
+        return false;
     }
 }
 
